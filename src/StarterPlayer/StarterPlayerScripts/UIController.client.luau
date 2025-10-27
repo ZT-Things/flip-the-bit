@@ -16,4 +16,7 @@ lobbyScreen.Main.Play.Activated:Connect(function()
     gameScreen.Enabled = false
 end)
 
-
+event.GameOver.OnClientEvent:Connect(function(score)
+    gameScreen.Enabled = false
+    endScreen.Enabled = true
+end)
