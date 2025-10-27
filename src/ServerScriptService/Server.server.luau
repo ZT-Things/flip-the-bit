@@ -21,10 +21,10 @@ event.Start.OnServerEvent:Connect(function(plr)
     while true do
         local hex = Helper.get_random_two_hex()
 
-        enemies[name].append(hex)
+        table.insert(enemies[name], hex)
         print(enemies[name])
 
-        event.SendEnemy(hex)
+        event.SendEnemy:FireClient(plr, hex)
         task.wait(1)
     end
 end)
