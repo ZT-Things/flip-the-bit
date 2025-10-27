@@ -5,9 +5,9 @@ local PlayerGui = plr.PlayerGui
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local event = ReplicatedStorage.Event
 
-local lobbyScreen = PlayerGui.Lobby
-local gameScreen = PlayerGui.Game
-local endScreen = PlayerGui.End
+local lobbyScreen = PlayerGui:WaitForChild("Lobby")
+local gameScreen = PlayerGui:WaitForChild("Game")
+local endScreen = PlayerGui:WaitForChild("End")
 
 -- lobby
 lobbyScreen.Main.Play.Activated:Connect(function()
