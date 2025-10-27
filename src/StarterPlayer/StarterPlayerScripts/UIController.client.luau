@@ -13,7 +13,7 @@ local endScreen = PlayerGui:WaitForChild("End")
 lobbyScreen.Main.Play.Activated:Connect(function()
     event.Start:FireServer()
     lobbyScreen.Enabled = false
-    gameScreen.Enabled = false
+    gameScreen.Enabled = true
 end)
 
 event.GameOver.OnClientEvent:Connect(function(score)
