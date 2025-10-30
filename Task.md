@@ -1,3 +1,12 @@
+TODO:
+- Update the buttons when flipped
+- Polish the enemy indicator
+- Detect when the state attacks the enemy
+- Add personal best
+- Add sound for hit
+- Add visual indicator when hit
+
+
 Lobby screen
 - Play button, that's it
 

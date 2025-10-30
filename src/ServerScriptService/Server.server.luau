@@ -50,7 +50,8 @@ event.Start.OnServerEvent:Connect(function(plr)
             ["timer"] = 10 -- Time it takes for this to reach the funny
         }
 
-        enemies[name][hex] = enemy
+        table.insert(enemies[name], enemy)
+        -- enemies[name][hex] = enemy -- This wouldn't allow 2 enemies with the same hex
         -- print(enemies[name])
         print(enemies)
 
