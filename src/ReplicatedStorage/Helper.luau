@@ -1,15 +1,15 @@
 local helper = {}
 
 --[[
-Returns 2 random hexadecimal as string
+Returns 2 random hexadecimal as string, will never be 00
 ]]
 function helper.get_random_two_hex()
-    local value = string.format("%02X", math.random(0, 255))
+    local value = string.format("%02X", math.random(1, 255))
     return value
 end
 
 --[[
-Accept 8 bits in string
+Accept 8 bits in string and converet into 2 hexadecimal
 ]]
 function helper.tohex(str)
     local decimal = tonumber(str, 2)

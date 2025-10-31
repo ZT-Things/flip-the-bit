@@ -18,6 +18,11 @@ function init(name)
     state[name] = {false, false, false, false, false, false, false, false}
 end
 
+function reset_state(name)
+    state[name] = {false, false, false, false, false, false, false, false}
+    event.UpdateState:FireClient(Players:FindFirstChild(name), state[name])
+end
+
 function tick_timer(name)
     if not enemies[name] then return end
     for i,v in pairs(enemies[name]) do
@@ -28,7 +33,7 @@ end
 function check_lose(name)
     print("Check")
     for i,v in pairs(enemies[name]) do
-        if v.timer == 0 then
+        if v.timer <= -1 then
             print("Lost")
             return true
         end
@@ -61,11 +66,54 @@ function check_kill(name)
         if v.hex == current_hex then
             print("Killed", v.hex)
             table.remove(enemies[name], i)
+            event.Kill:FireClient(Players:FindFirstChild(name), current_hex)
+
+            reset_state(name)
+
             return
         end
     end
 end
 
+-- Send enemy
+-- Send enemy with balanced difficulty curve
+event.Start.OnServerEvent:Connect(function(plr)
+    local waveCount = 0
+    local baseCooldown = 5
+    local minCooldown = 0.8
+    local baseTimer = 10
+    local minTimer = 3
+
+    while true do
+        local name = plr.Name
+        if not enemies[name] then return end
+
+        waveCount += 1
+
+        -- Exponential decay curve for cooldown (spawn rate)
+        -- Fast decrease at start, slows down as it approaches minimum
+        local cdProgress = math.min(waveCount / 50, 1) -- Reaches minimum at wave 50
+        local cd = baseCooldown - (baseCooldown - minCooldown) * (1 - math.exp(-3 * cdProgress))
+
+        -- Logarithmic decrease for timer (enemy speed)
+        -- Slower initial decrease, more gradual difficulty
+        local timerProgress = math.min(waveCount / 80, 1) -- Reaches minimum at wave 80
+        local timer = baseTimer - (baseTimer - minTimer) * math.log(1 + timerProgress * 9) / math.log(10)
+
+        local hex = Helper.get_random_two_hex()
+        local enemy = {
+            ["hex"] = hex,
+            ["timer"] = timer
+        }
+
+        table.insert(enemies[name], enemy)
+        event.SendEnemy:FireClient(plr, hex, timer)
+
+        task.wait(cd)
+    end
+end)
+
+-- Game state
 event.Start.OnServerEvent:Connect(function(plr)
     -- init(plr)
     local name = plr.Name
@@ -73,21 +121,8 @@ event.Start.OnServerEvent:Connect(function(plr)
 
     event.UpdateState:FireClient(plr, state[name])
     while true do -- This logic sucks, fix later by adding movement and shit
-        local hex = Helper.get_random_two_hex()
+        if not enemies[name] then return end
 
-        local timer = 10
-
-        local enemy = {
-            ["hex"] = hex,
-            ["timer"] = timer -- Time it takes for this to reach the funny
-        }
-
-        table.insert(enemies[name], enemy)
-        -- enemies[name][hex] = enemy -- This wouldn't allow 2 enemies with the same hex
-        -- print(enemies[name])
-        print(enemies)
-
-        event.SendEnemy:FireClient(plr, hex, timer)
         task.wait(1)
         tick_timer(name)
         if check_lose(name) then

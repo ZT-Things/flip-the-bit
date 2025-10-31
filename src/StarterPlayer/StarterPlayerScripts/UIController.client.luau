@@ -9,6 +9,8 @@ local lobbyScreen = PlayerGui:WaitForChild("Lobby")
 local gameScreen = PlayerGui:WaitForChild("Game")
 local endScreen = PlayerGui:WaitForChild("End")
 
+local Helper = require(ReplicatedStorage:WaitForChild("Helper"))
+
 -- lobby
 
 function clearEnemies()
@@ -62,14 +64,20 @@ event.SendEnemy.OnClientEvent:Connect(function(hex, timer)
 end)
 
 event.UpdateState.OnClientEvent:Connect(function(x)
+    local hex_string = ""
+
     for i = 1,8 do
         local button = gameScreen.Main.Buttons:FindFirstChild(tostring(i))
         if x[i] == true then
             button.Text = "1"
+            hex_string = hex_string .. "1"
         else
             button.Text = "0"
+            hex_string = hex_string .. "0"
         end
     end
+
+    gameScreen.Main.Indicator.TextLabel.Text = tostring(Helper.tohex(hex_string))
 end)
 
 -- Buttons
@@ -106,3 +114,8 @@ for i,v in pairs(gameScreen.Main:WaitForChild("Buttons"):GetChildren()) do
         end
     end)
 end
+
+event.Kill.OnClientEvent:Connect(function(hex)
+    print("Killed on client", hex)
+    gameScreen.Main.Window:FindFirstChild(hex):Destroy()
+end)
