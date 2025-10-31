@@ -31,14 +31,6 @@ event.SendEnemy.OnClientEvent:Connect(function(hex)
     local enemy = ReplicatedStorage
 end)
 
-for i,v in pairs(gameScreen.Main:WaitForChild("Buttons"):GetChildren()) do
-    if not v:IsA("TextButton") then continue end
-
-    v.Activated:Connect(function()
-        event.Flip:FireServer(v.Name)
-    end)
-end
-
 event.UpdateState.OnClientEvent:Connect(function(x)
     for i = 1,8 do
         local button = gameScreen.Main.Buttons:FindFirstChild(tostring(i))
@@ -49,3 +41,31 @@ event.UpdateState.OnClientEvent:Connect(function(x)
         end
     end
 end)
+
+-- Buttons
+
+local holding = false
+
+local mouse = plr:GetMouse()
+
+mouse.Button1Down:Connect(function()
+    holding = true
+end)
+
+mouse.Button1Up:Connect(function()
+    holding = false
+end)
+
+for i,v in pairs(gameScreen.Main:WaitForChild("Buttons"):GetChildren()) do
+    if not v:IsA("TextButton") then continue end
+
+    v.Activated:Connect(function()
+        event.Flip:FireServer(v.Name)
+    end)
+
+    v.MouseEnter:Connect(function()
+        if holding then
+            event.Flip:FireServer(v.Name)
+        end
+    end)
+end
