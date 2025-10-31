@@ -71,6 +71,7 @@ event.Start.OnServerEvent:Connect(function(plr)
     local name = plr.Name
     init(name)
 
+    event.UpdateState:FireClient(plr, state[name])
     while true do -- This logic sucks, fix later by adding movement and shit
         local hex = Helper.get_random_two_hex()
 
