@@ -60,7 +60,7 @@ function check_kill(name)
     for i,v in pairs(enemies[name]) do
         if v.hex == current_hex then
             print("Killed", v.hex)
-            table.remove(v, i)
+            table.remove(enemies[name], i)
             return
         end
     end
