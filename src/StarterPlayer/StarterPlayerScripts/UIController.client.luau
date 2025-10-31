@@ -27,8 +27,11 @@ endScreen.Main.Back.Activated:Connect(function()
     lobbyScreen.Enabled = true
 end)
 
-event.SendEnemy.OnClientEvent:Connect(function(hex)
-    local enemy = ReplicatedStorage
+event.SendEnemy.OnClientEvent:Connect(function(hex, timer)
+    local enemy = ReplicatedStorage.Template.EnemyTemplate:Clone()
+    enemy.Name = hex
+    enemy.Parent = gameScreen.Main.Window
+
 end)
 
 event.UpdateState.OnClientEvent:Connect(function(x)
@@ -50,17 +53,24 @@ local mouse = plr:GetMouse()
 
 mouse.Button1Down:Connect(function()
     holding = true
+    print("Holding:", holding)
 end)
 
 mouse.Button1Up:Connect(function()
     holding = false
+    print("Holding:", holding)
 end)
 
 for i,v in pairs(gameScreen.Main:WaitForChild("Buttons"):GetChildren()) do
     if not v:IsA("TextButton") then continue end
 
-    v.Activated:Connect(function()
+    v.MouseButton1Down:Connect(function()
+        holding = true
         event.Flip:FireServer(v.Name)
+    end)
+
+    v.MouseButton1Up:Connect(function()
+        holding = false
     end)
 
     v.MouseEnter:Connect(function()

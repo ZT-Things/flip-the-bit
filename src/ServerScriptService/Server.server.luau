@@ -74,9 +74,11 @@ event.Start.OnServerEvent:Connect(function(plr)
     while true do -- This logic sucks, fix later by adding movement and shit
         local hex = Helper.get_random_two_hex()
 
+        local timer = 10
+
         local enemy = {
             ["hex"] = hex,
-            ["timer"] = 10 -- Time it takes for this to reach the funny
+            ["timer"] = timer -- Time it takes for this to reach the funny
         }
 
         table.insert(enemies[name], enemy)
@@ -84,7 +86,7 @@ event.Start.OnServerEvent:Connect(function(plr)
         -- print(enemies[name])
         print(enemies)
 
-        event.SendEnemy:FireClient(plr, hex)
+        event.SendEnemy:FireClient(plr, hex, timer)
         task.wait(1)
         tick_timer(name)
         if check_lose(name) then
