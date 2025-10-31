@@ -28,16 +28,24 @@ endScreen.Main.Back.Activated:Connect(function()
 end)
 
 event.SendEnemy.OnClientEvent:Connect(function(hex)
-    print(hex)
-    local text = Instance.new("TextLabel")
-    text.Parent = gameScreen.Main.Frame
-    text.Text = hex
+    local enemy = ReplicatedStorage
 end)
 
-for i,v in pairs(gameScreen:WaitForChild("Buttons"):GetChildren()) do
+for i,v in pairs(gameScreen.Main:WaitForChild("Buttons"):GetChildren()) do
     if not v:IsA("TextButton") then continue end
 
     v.Activated:Connect(function()
         event.Flip:FireServer(v.Name)
     end)
 end
+
+event.UpdateState.OnClientEvent:Connect(function(x)
+    for i = 1,8 do
+        local button = gameScreen.Main.Buttons:FindFirstChild(tostring(i))
+        if x[i] == true then
+            button.Text = "1"
+        else
+            button.Text = "0"
+        end
+    end
+end)

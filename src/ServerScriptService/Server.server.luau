@@ -19,6 +19,7 @@ function init(name)
 end
 
 function tick_timer(name)
+    if not enemies[name] then return end
     for i,v in pairs(enemies[name]) do
         v.timer -= 1
     end
@@ -35,6 +36,34 @@ function check_lose(name)
     print("Still going")
 
     return false
+end
+
+function state_to_string(name)
+    local hex_string = ""
+    for i = 1,8 do
+        if state[name][i] == true then
+            hex_string = hex_string .. "1"
+        else
+            hex_string = hex_string .. "0"
+        end
+    end
+    return hex_string
+end
+
+function check_kill(name)
+    local current_state = state_to_string(name)
+
+    local current_hex = Helper.tohex(current_state)
+
+    print("state", current_state, current_hex)
+
+    for i,v in pairs(enemies[name]) do
+        if v.hex == current_hex then
+            print("Killed", v.hex)
+            table.remove(v, i)
+            return
+        end
+    end
 end
 
 event.Start.OnServerEvent:Connect(function(plr)
@@ -74,5 +103,6 @@ event.Flip.OnServerEvent:Connect(function(plr, bit)
     end
     state[name][bit] = not state[name][bit]
     print(state)
+    check_kill(name)
     event.UpdateState:FireClient(plr, state[name])
 end)
